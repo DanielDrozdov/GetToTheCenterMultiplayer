@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class TapController : MonoBehaviour, IPointerDownHandler {
+    [HideInInspector] public PlayerMoveController PlayerMoveController;
     public void OnPointerDown(PointerEventData eventData) {
-        PlayerMoveController.InstanceMove();
+        PlayerMoveController.Move();
     }
 }

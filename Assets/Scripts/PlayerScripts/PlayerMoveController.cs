@@ -1,42 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class PlayerMoveController : MonoBehaviour {
+public class PlayerMoveController : MonoBehaviourPunCallbacks {
     public PlayerSpawnStateController PlayerSpawnStateController;
-    private static PlayerMoveController Instance;
     private Rigidbody rb;
-    private float playerSpeed = 0.8f;
+    private float playerSpeed = 0.7f;
     private Vector3 moveDirectionVector;
 
-    private PlayerMoveController() { }
-
-    private void Awake() {
-        Instance = this;
-        transform.position = PlayerSpawnStateController.transform.position;
+    public void OnPlayerEnteredRoom(PlayerSpawnStateController playerSpawnStateController) {
+        SetRigidbodyFreezeAxesPositionAndMoveDirection(playerSpawnStateController);
     }
 
-    private void Start() {
-        rb = GetComponent<Rigidbody>();
-        SetRigidbodyFreezeAxesPositionAndMoveDirection();
-        CameraFollowingController.GetInstance().SetStartPointAndRotation(PlayerSpawnStateController.CameraData);
-    }
-
-    public static void InstanceMove() {
-        Instance.Move();
-    }
-
-    private void Move() {
+    public void Move() {
         rb.velocity = moveDirectionVector;
     }
 
-    private void SetRigidbodyFreezeAxesPositionAndMoveDirection() {
-        if(PlayerSpawnStateController.GetIsBlockedZPos()) {
+    private void SetRigidbodyFreezeAxesPositionAndMoveDirection(PlayerSpawnStateController playerSpawnStateController) {
+        rb = GetComponent<Rigidbody>();
+        if(playerSpawnStateController.GetIsBlockedZPos()) {
             rb.constraints = RigidbodyConstraints.FreezePositionZ;
-            moveDirectionVector = new Vector3(playerSpeed * PlayerSpawnStateController.GetMoveDirection().x, 0, 0);
+            moveDirectionVector = new Vector3(playerSpeed * playerSpawnStateController.GetMoveDirection().x, 0, 0);
         } else {
             rb.constraints = RigidbodyConstraints.FreezePositionX;
-            moveDirectionVector = new Vector3(0, 0, playerSpeed * PlayerSpawnStateController.GetMoveDirection().z);
+            moveDirectionVector = new Vector3(0, 0, playerSpeed * playerSpawnStateController.GetMoveDirection().z);
         }
     }
+
 }

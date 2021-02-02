@@ -1,20 +1,21 @@
-﻿using System.Collections;
+﻿using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraFollowingController : MonoBehaviour
 {
-    private static CameraFollowingController Instance;
 
-    [SerializeField] private Transform player;
+    private Transform player;
+    [SerializeField] private TapController tapController;
     private static Vector3 playerCameraOffset = new Vector3(0,2,4);
     private float _lerpSpeed = 0.9f;
     private float _xStartRotation = 25f;
 
-    private CameraFollowingController() { }
-
     private void Awake() {
-        Instance = this;
+        if(!PhotonView.Get(this).IsMine) {
+            gameObject.SetActive(false);
+        }
     }
 
     void LateUpdate()
@@ -28,7 +29,9 @@ public class CameraFollowingController : MonoBehaviour
         playerCameraOffset = transform.position - player.position;
     }
 
-    public static CameraFollowingController GetInstance() {
-        return Instance;
+    public void SetPlayerAndTapController(Transform player,PlayerMoveController playerMoveController) {
+        this.player = player;
+        tapController.PlayerMoveController = playerMoveController;
     }
+
 }

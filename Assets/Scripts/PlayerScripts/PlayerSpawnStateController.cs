@@ -6,8 +6,6 @@ public class PlayerSpawnStateController : MonoBehaviour
 {
     public CameraData CameraData;
     [SerializeField] private Vector3 moveDirection;
-    //public Transform CameraPoint;
-    //public float cameraStartRotation;
 
     private void Awake() {
         CalculateCameraData();
