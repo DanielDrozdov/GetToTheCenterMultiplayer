@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SelectedMenuPanelController : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class SelectedMenuPanelController : MonoBehaviour
     private SelectedPanel selectedPanel;
     private GameObject lastOpenedPanel;
 
-    public void ClosePanel() {
+    public void ClosePanels() {
         lastOpenedPanel.SetActive(false);
         SelectedMenuPanelBG.SetActive(false);
     }

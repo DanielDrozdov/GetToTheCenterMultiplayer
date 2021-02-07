@@ -3,15 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-public class NetworkMenuController : MonoBehaviourPunCallbacks
-{
+public class NetworkMenuController : MonoBehaviourPunCallbacks {
     private string gameVersion = "1";
 
     private void Awake() {
         PhotonNetwork.GameVersion = gameVersion;
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.ConnectUsingSettings();
+    }
+
+    public void CreateRoom(string roomName,string mapName) {
+        Hashtable properties = new Hashtable();
+        properties.Add("MapName", mapName);
+        PhotonNetwork.CreateRoom(roomName,
+                new Photon.Realtime.RoomOptions() { MaxPlayers = 4 ,CustomRoomProperties = properties});
     }
 
     public void OnJoinRandomGame() {
@@ -23,17 +30,8 @@ public class NetworkMenuController : MonoBehaviourPunCallbacks
         }
     }
 
-    public void OnJoinCurrentGame(string sessionName) {
-        PhotonNetwork.JoinRoom(sessionName);
-    }
-
-    public void OnCreateGameSession(string sessionName) {
-        PhotonNetwork.CreateRoom(sessionName, new Photon.Realtime.RoomOptions() {MaxPlayers = 4 });
-    }
-
-    public override void OnJoinedRoom() {
-        PhotonNetwork.LoadLevel("ForestScene");
-
+    public override void OnConnectedToMaster() {
+        PhotonNetwork.JoinLobby();
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message) {

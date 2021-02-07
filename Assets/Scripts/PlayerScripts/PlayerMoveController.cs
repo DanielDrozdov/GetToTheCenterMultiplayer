@@ -27,5 +27,4 @@ public class PlayerMoveController : MonoBehaviourPunCallbacks {
             moveDirectionVector = new Vector3(0, 0, playerSpeed * playerSpawnStateController.GetMoveDirection().z);
         }
     }
-
 }
