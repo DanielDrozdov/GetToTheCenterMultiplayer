@@ -7,7 +7,7 @@ using Photon.Pun;
 public class NicknameTutorialInputPanelController : NicknamePanelController
 {
     public override void AddFunc() {
-        PhotonNetwork.NickName = inputField.text;
+        DataStorage.SetPlayerNickName(inputField.text);
         transform.parent.gameObject.SetActive(false);
     }
 }

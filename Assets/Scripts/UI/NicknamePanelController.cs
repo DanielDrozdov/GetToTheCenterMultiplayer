@@ -6,7 +6,7 @@ public class NicknamePanelController : MonoBehaviour
     public TMP_InputField inputField;
 
     public void OnAcceptNickname() {
-        PlayerPrefs.SetString(DataStorage.NicknamePlayerPrefs, inputField.text);
+        DataStorage.SetPlayerNickName(inputField.text);
         AddFunc();
     }
 

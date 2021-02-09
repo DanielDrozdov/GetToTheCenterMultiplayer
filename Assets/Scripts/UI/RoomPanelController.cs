@@ -18,6 +18,15 @@ public class RoomPanelController : MonoBehaviour
         UpdatePlayersCount();
     }
 
+    public void OnClick_ConnectButton() {
+        if(roomInfo.PlayerCount == roomInfo.MaxPlayers) {
+            return;
+        }
+        EnableOrDisableMenuPanels EnableDisablePanelsController = EnableOrDisableMenuPanels.GetInstance();
+        PhotonNetwork.JoinRoom(roomInfo.Name);
+        EnableDisablePanelsController.DeactivateMainPanelsForLobby();
+    }
+
     private void OnEnable() {
         UpdatePlayersCount();
     }

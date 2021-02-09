@@ -7,11 +7,13 @@ using Photon.Realtime;
 
 public class SceneNetworkController : PlayerDataInstantiate
 {
-    [SerializeField] private PlayerSpawnStateController[] PlayerSpawnStateControllers;
+    [SerializeField] private GameZonesController GameZonesController;
+    private PlayerSpawnStateController[] PlayerSpawnStateControllers;
     [SerializeField] private List<GameObject> playersNickNameTablets;
     public GameObject PlayerPrefab;
     
     private void Awake() {
+        PlayerSpawnStateControllers = GameZonesController.ActivateGameZoneAndGetData();
         OnPlayerEnteredRoom();
     }
 
