@@ -10,4 +10,10 @@ public class LeaveRoomController : MonoBehaviourPunCallbacks
     public void LeaveRoom() {
         PhotonNetwork.LeaveRoom();
     }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer) {
+        if(PhotonNetwork.CurrentRoom.PlayerCount < 2) {
+            LeaveRoom();
+        }
+    }
 }

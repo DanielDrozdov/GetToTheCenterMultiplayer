@@ -7,8 +7,7 @@ using TMPro;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class NetworkMenuController : MonoBehaviourPunCallbacks {
-    [SerializeField] private TextMeshProUGUI timeToNextRandomGameText;
-    private bool IsRandomPlayBlocked;
+    [SerializeField] private GameObject NoOneRoomInGamePanel;
 
     private string gameVersion = "1";
     private string[] maps = { "Forest", "Desert" };
@@ -29,20 +28,13 @@ public class NetworkMenuController : MonoBehaviourPunCallbacks {
     }
 
     public void OnJoinRandomGame() {
-        if(!IsRandomPlayBlocked) {
-            if(PhotonNetwork.CountOfRooms > 0) {
-                bool isNotConnected = PhotonNetwork.JoinRandomRoom();
-                if(isNotConnected) {
-                    StartCoroutine(FiveSecondsDelayToRandomPlay());
-                    return;
-                }
-            } else {
-                string roomName = PhotonNetwork.NickName + (PhotonNetwork.CountOfRooms + 1);
-                CreateRoom(roomName, maps[Random.Range(0, maps.Length)], "Medium");
-            }
+        if(PhotonNetwork.CountOfRooms > 0) {
+            PhotonNetwork.JoinRandomRoom();
             EnableOrDisableMenuPanels EnableDisablePanelsController = EnableOrDisableMenuPanels.GetInstance();
             EnableDisablePanelsController.DeactivateMainPanelsForLobby();
             EnableDisablePanelsController.ActivateLobby();
+        } else {
+            NoOneRoomInGamePanel.SetActive(true);
         }
     }
 
@@ -52,18 +44,5 @@ public class NetworkMenuController : MonoBehaviourPunCallbacks {
 
     public override void OnJoinRoomFailed(short returnCode, string message) {
         Debug.Log(message);
-    }
-
-    private IEnumerator FiveSecondsDelayToRandomPlay() {
-        float leftTime = 5f;
-        IsRandomPlayBlocked = true;
-        timeToNextRandomGameText.gameObject.SetActive(true);
-        while(leftTime >= 0) {
-            leftTime -= Time.deltaTime;
-            timeToNextRandomGameText.text = Mathf.Floor(leftTime).ToString();
-            yield return null;
-        }
-        IsRandomPlayBlocked = false;
-        timeToNextRandomGameText.gameObject.SetActive(false);
     }
 }

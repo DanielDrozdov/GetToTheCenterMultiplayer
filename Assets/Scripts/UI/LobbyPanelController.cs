@@ -29,6 +29,8 @@ public class LobbyPanelController : MonoBehaviourPunCallbacks {
         UpdateLobbyUI();
         if(PhotonNetwork.LocalPlayer.ActorNumber == 1) {
             ActivateHostPlayButton();
+        } else {
+            DeactivateHostPlayButton();
         }
     }
 
@@ -45,9 +47,13 @@ public class LobbyPanelController : MonoBehaviourPunCallbacks {
     public void StartGame() {
         if(PhotonNetwork.CurrentRoom.PlayerCount < 2) {
             return;
-        } 
-        int sceneNumberInBuild = SceneManager.GetSceneByName((string)PhotonNetwork.CurrentRoom.CustomProperties["MapName"] + "Scene").buildIndex;
-        PhotonNetwork.LoadLevel(2);
+        }
+        string sceneName = (string)PhotonNetwork.CurrentRoom.CustomProperties["MapName"];
+        if(sceneName == "Forest") {
+            PhotonNetwork.LoadLevel(2);
+        } else {
+            PhotonNetwork.LoadLevel(3);
+        }
     }
 
     private void AddPlayer(Player player) {
@@ -75,6 +81,10 @@ public class LobbyPanelController : MonoBehaviourPunCallbacks {
 
     private void ActivateHostPlayButton() {
         startGameButton.SetActive(true);
+    }
+
+    private void DeactivateHostPlayButton() {
+        startGameButton.SetActive(false);
     }
 
     private void ClearPlayerListAndDeletePlayersPanels() {
