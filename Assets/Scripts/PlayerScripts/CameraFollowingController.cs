@@ -19,6 +19,7 @@ public class CameraFollowingController : MonoBehaviour
                 gameObject.SetActive(false);
             }
         }
+        PlayerStateController.OnDisablePlayerFunctions += OnPlayerWin;
     }
 
     void LateUpdate()
@@ -35,6 +36,12 @@ public class CameraFollowingController : MonoBehaviour
     public void SetPlayerAndTapController(Transform player,PlayerMoveController playerMoveController) {
         this.player = player;
         tapController.PlayerMoveController = playerMoveController;
+    }
+
+    private void OnPlayerWin() {
+        transform.position = SceneNetworkController.GetCameraMainPoint().position;
+        transform.rotation = SceneNetworkController.GetCameraMainPoint().rotation;
+        enabled = false;
     }
 
 }

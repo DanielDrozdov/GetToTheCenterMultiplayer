@@ -6,9 +6,9 @@ using Photon.Realtime;
 
 public class GameZonesController : MonoBehaviour
 {
-    public PlayerSpawnStateController[] ActivateGameZoneAndGetData() {
+    public GameZoneController GetGameRoomGameZone() {
         GameObject gameZone = transform.Find("GameZone" + PhotonNetwork.CurrentRoom.CustomProperties["Difficulty"]).gameObject;
         gameZone.SetActive(true);
-        return gameZone.GetComponent<GameZoneController>().PlayerSpawnStateControllers;
+        return gameZone.GetComponent<GameZoneController>();
     }
 }

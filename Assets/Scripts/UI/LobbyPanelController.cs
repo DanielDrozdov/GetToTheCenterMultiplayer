@@ -48,6 +48,8 @@ public class LobbyPanelController : MonoBehaviourPunCallbacks {
         if(PhotonNetwork.CurrentRoom.PlayerCount < 2) {
             return;
         }
+        PhotonNetwork.CurrentRoom.IsOpen = false;
+        PhotonNetwork.CurrentRoom.IsVisible = false;
         string sceneName = (string)PhotonNetwork.CurrentRoom.CustomProperties["MapName"];
         if(sceneName == "Forest") {
             PhotonNetwork.LoadLevel(2);

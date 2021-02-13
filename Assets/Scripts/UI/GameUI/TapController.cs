@@ -7,6 +7,7 @@ public class TapController : MonoBehaviour, IPointerDownHandler {
     [HideInInspector] public PlayerMoveController PlayerMoveController;
     private void Start() {
         SceneNetworkController.OnGameStarted += ActivateTapController;
+        PlayerStateController.OnDisablePlayerFunctions += DeactivateTapPanel;
         enabled = false;
     }
 
@@ -16,5 +17,9 @@ public class TapController : MonoBehaviour, IPointerDownHandler {
 
     private void ActivateTapController() {
         enabled = true;
+    }
+
+    private void DeactivateTapPanel() {
+        gameObject.SetActive(false);
     }
 }
