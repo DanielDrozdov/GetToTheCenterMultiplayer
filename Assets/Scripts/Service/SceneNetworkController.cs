@@ -47,21 +47,22 @@ public class SceneNetworkController : PlayerDataInstantiate {
     private void OnPlayerEnteredRoom() {
         PlayerSpawnStateController playerSpawnStateController = PlayerSpawnStateControllers[PhotonNetwork.LocalPlayer.ActorNumber - 1];
         GameObject player = PhotonNetwork.Instantiate(PlayerPrefab.name, playerSpawnStateController.transform.position, Quaternion.identity);
-        playerCanvasController = player.transform.Find("Main Camera").GetComponent<PlayerCanvasController>();
+        GameObject playerCamera = player.transform.Find("Main Camera").gameObject;
+        playerCanvasController = playerCamera.GetComponent<PlayerCanvasController>();
         playerCanvasNetworkController.PlayerCanvasController = playerCanvasController;
         PlayerStateController.OnPlayerWinToAllPlayersEvent += playerCanvasNetworkController.SendNewWinnerData;
         playerCanvasNetworkController.ActivateCountDownPanelFunctionsAndSetTime();
-        InstantiatePlayerAndGenerateData(player, playerSpawnStateController);
+        InstantiatePlayerAndGenerateData(player, playerSpawnStateController, playerCamera);
     }
 
 }
 
 public class PlayerDataInstantiate : MonoBehaviourPunCallbacks {
 
-    public void InstantiatePlayerAndGenerateData(GameObject player,PlayerSpawnStateController playerSpawnStateController) {
+    public void InstantiatePlayerAndGenerateData(GameObject player,PlayerSpawnStateController playerSpawnStateController,GameObject playerCamera) {
         Transform body = player.transform.Find("Body");
         PlayerMoveController playerMoveController = body.GetComponent<PlayerMoveController>();
-        playerMoveController.OnPlayerEnteredRoom(playerSpawnStateController);
+        playerMoveController.OnPlayerEnteredRoom(playerSpawnStateController,playerCamera);
         InstantiateCameraAndSetToPlayer(player.transform, body, playerSpawnStateController, playerMoveController);
     }
 

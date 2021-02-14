@@ -6,10 +6,11 @@ public class PlayerTutorialInstantiate : PlayerDataInstantiate
 {
     [SerializeField] private GameObject player;
     [SerializeField] private PlayerSpawnStateController playerSpawnStateController;
+    [SerializeField] private GameObject playerCamera;
 
     void Start()
     {
-        InstantiatePlayerAndGenerateData(player, playerSpawnStateController);
+        InstantiatePlayerAndGenerateData(player, playerSpawnStateController, playerCamera);
     }
 
     

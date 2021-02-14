@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class TapController : MonoBehaviour, IPointerDownHandler {
     [HideInInspector] public PlayerMoveController PlayerMoveController;
     private void Start() {
-        PlayerStateController.OnDisablePlayerFunctions += DeactivateTapPanel;
-        enabled = false;
+        if(SceneManager.GetActiveScene().name != "TutorialScene") {
+            PlayerStateController.OnDisablePlayerFunctions += DeactivateTapPanel;
+            enabled = false;
+        }
     }
 
     public void OnPointerDown(PointerEventData eventData) {

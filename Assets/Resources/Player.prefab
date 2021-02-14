@@ -1336,6 +1336,7 @@ GameObject:
   - component: {fileID: 2192931313880449856}
   - component: {fileID: 2198918156707741987}
   - component: {fileID: 8210637572494569706}
+  - component: {fileID: 8572060879942284976}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1475,6 +1476,18 @@ MonoBehaviour:
   tapController: {fileID: 7398100981326625583}
   roundResultPanelController: {fileID: 833975450}
   leaveRoomButton: {fileID: 8084448354607576433}
+--- !u!114 &8572060879942284976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 338069872146317096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08670a88233602f4faaaaa711f00cda3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &733984270935415646
 GameObject:
   m_ObjectHideFlags: 0
