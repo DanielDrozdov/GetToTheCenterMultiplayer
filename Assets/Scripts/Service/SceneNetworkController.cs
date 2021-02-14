@@ -49,7 +49,7 @@ public class SceneNetworkController : PlayerDataInstantiate {
         GameObject player = PhotonNetwork.Instantiate(PlayerPrefab.name, playerSpawnStateController.transform.position, Quaternion.identity);
         playerCanvasController = player.transform.Find("Main Camera").GetComponent<PlayerCanvasController>();
         playerCanvasNetworkController.PlayerCanvasController = playerCanvasController;
-        PlayerStateController.OnPlayerWinToAllPlayersEvent += playerCanvasNetworkController.PlayWinTextAnimationForAllPlayers;
+        PlayerStateController.OnPlayerWinToAllPlayersEvent += playerCanvasNetworkController.SendNewWinnerData;
         playerCanvasNetworkController.ActivateCountDownPanelFunctionsAndSetTime();
         InstantiatePlayerAndGenerateData(player, playerSpawnStateController);
     }

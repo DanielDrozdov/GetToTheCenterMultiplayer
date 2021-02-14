@@ -10,11 +10,13 @@ public class PlayerCanvasNetworkController : MonoBehaviour
 {
     [HideInInspector] public PlayerCanvasController PlayerCanvasController;
     private SceneNetworkController SceneNetworkController;
-    private Queue<WinPlayerAnimationData> winAnimationsQueue = new Queue<WinPlayerAnimationData>(4);
+    private Queue<WinPlayerData> winPlayersDataQueueDynamic = new Queue<WinPlayerData>(4);
+    private static Queue<WinPlayerData> winPlayersDataQueue = new Queue<WinPlayerData>(4);
+    private bool IsGameEnd;
     private static bool IsWinAnimEnd;
     private bool IsCheckNextCoroutineStarted;
 
-    private float startGameDelay = 10f;
+    private float startGameDelay = 2f;
     private float totalStartGameDelay;
 
     private void Awake() {
@@ -25,11 +27,23 @@ public class PlayerCanvasNetworkController : MonoBehaviour
         IsWinAnimEnd = true;
     }
 
-    public void PlayWinTextAnimationForAllPlayers(WinPlayerAnimationData winPlayerAnimationData) {
-        winAnimationsQueue.Enqueue(winPlayerAnimationData);
+    public static Queue<WinPlayerData> GetWinPlayersData() {
+        return winPlayersDataQueue;
+    }
+
+    public void SendNewWinnerData(WinPlayerData winPlayerData) {
+        if(winPlayerData.IsPlayerWin) {
+            winPlayersDataQueueDynamic.Enqueue(winPlayerData);
+        }
+        winPlayersDataQueue.Enqueue(winPlayerData);
         if(!IsCheckNextCoroutineStarted) {
             StartCoroutine(CheckNextWinAnim());
         }
+
+        if(winPlayerData.IsPlayerWin == true && winPlayerData.winPlayersCount == PhotonNetwork.CurrentRoom.PlayerCount) {
+            OnEndGame();
+        }
+
     }
 
     public void ActivateCountDownPanelFunctionsAndSetTime() {
@@ -75,7 +89,7 @@ public class PlayerCanvasNetworkController : MonoBehaviour
             remainingRoundTime -= Time.unscaledDeltaTime;
             yield return null;
         }
-        SceneNetworkController.OnGameEnd_CallEvent();
+        OnEndGame();
     }
 
     private float GetRoundTime() {
@@ -92,14 +106,21 @@ public class PlayerCanvasNetworkController : MonoBehaviour
 
     private IEnumerator CheckNextWinAnim() {
         IsCheckNextCoroutineStarted = true;
-        while(winAnimationsQueue.Count != 0) {
-            WinPlayerAnimationData animData = winAnimationsQueue.Dequeue();
-            PlayerCanvasController.PlayPlayerWinRatingTextAnimation(animData.GetTextAboutWinner());
+        while(winPlayersDataQueueDynamic.Count != 0) {
+            WinPlayerData playerData = winPlayersDataQueueDynamic.Dequeue();
+            PlayerCanvasController.PlayPlayerWinRatingTextAnimation(playerData.GetTextAboutWinner());
             while(!IsWinAnimEnd) {
                 yield return null;
             }
             IsWinAnimEnd = false;
         }
         IsCheckNextCoroutineStarted = false;
+    }
+
+    private void OnEndGame() {
+        if(!IsGameEnd) {
+            SceneNetworkController.OnGameEnd_CallEvent();
+            IsGameEnd = true;
+        }
     }
 }

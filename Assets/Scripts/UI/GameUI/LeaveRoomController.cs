@@ -7,8 +7,14 @@ using Photon.Realtime;
 
 public class LeaveRoomController : MonoBehaviourPunCallbacks
 {
+    private void Awake() {
+        RoundResultPanelController.OnAutoDisconnect += LeaveRoom;
+    }
+
     public void LeaveRoom() {
-        PhotonNetwork.LeaveRoom();
+        if(photonView.IsMine) {
+            PhotonNetwork.LeaveRoom();
+        }
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer) {

@@ -11,56 +11,89 @@ public class PlayerStateController : MonoBehaviourPun
     [SerializeField] private PlayerCanvasController playerCanvasController;
 
     public delegate void PlayerActions();
-    public delegate void PlayerActionsToAllPlayers(WinPlayerAnimationData animData);
+    public delegate void PlayerActionsToAllPlayers(WinPlayerData animData);
     public static event PlayerActions OnDisablePlayerFunctions;
     public static event PlayerActionsToAllPlayers OnPlayerWinToAllPlayersEvent;
 
+    private bool IsPlayerWin;
+
     private string winPlayerNickName;
     private float winPlayersCount;
+    private float timeScore;
 
     private void Awake() {
+            SceneNetworkController.OnGameEnd += SetPlayerInactive;
+    }
+
+    private void OnEnable() {
         PhotonNetwork.NetworkingClient.EventReceived += NetworkEventReceived;
-        SceneNetworkController.OnGameEnd += SetPlayerInactive;
+    }
+
+    private void OnDisable() {
+        PhotonNetwork.NetworkingClient.EventReceived -= NetworkEventReceived;
     }
 
     public void OnPlayerWinGame() {
         if(photonView.IsMine) {
             OnDisablePlayerFunctions();
-            SetWinPlayerDataToAllPlayers();
-            WinPlayerAnimationData animData = new WinPlayerAnimationData(winPlayerNickName, winPlayersCount);
-            OnPlayerWinToAllPlayersEvent(animData);
+            IsPlayerWin = true;
+            SetPlayerDataToAllPlayers();
         }
     }
 
     private void SetPlayerInactive() {
         OnDisablePlayerFunctions();
+        if(photonView.IsMine) {
+            if(!IsPlayerWin) {
+                SetPlayerDataToAllPlayers();
+            }
+        }
     }
 
     private void NetworkEventReceived(EventData obj) {
         if(obj.Code == 0) {
             object[] data = (object[])obj.CustomData;
-            winPlayerNickName = (string)data[0];
-            winPlayersCount = (float)data[1];
-            WinPlayerAnimationData animData = new WinPlayerAnimationData(winPlayerNickName, winPlayersCount);
-            OnPlayerWinToAllPlayersEvent(animData);
+            string _winPlayerNickName = (string)data[0];
+            float _winPlayersCount = (float)data[1];
+            winPlayersCount = _winPlayersCount;
+            float _timeScore = (float)data[2];
+            bool _IsPlayerWin = (bool)data[3];
+            if(photonView.IsMine) {
+                WinPlayerData winnerData = new WinPlayerData(_winPlayerNickName, winPlayersCount, _timeScore, _IsPlayerWin);
+                OnPlayerWinToAllPlayersEvent(winnerData);
+            }
         }
     }
 
-    private void SetWinPlayerDataToAllPlayers() {
+    private object[] GetPlayerData() {
         winPlayerNickName = PhotonNetwork.NickName;
         winPlayersCount++;
-        object[] data = { winPlayerNickName, winPlayersCount};
-        PhotonNetwork.RaiseEvent(0, data, RaiseEventOptions.Default, SendOptions.SendUnreliable);
+        timeScore = (float)PhotonNetwork.Time - (float)PhotonNetwork.CurrentRoom.CustomProperties["timeToStartGame"];
+        if(!IsPlayerWin) {
+            timeScore = 20f;
+        }
+        object[] data = { winPlayerNickName, winPlayersCount, timeScore, IsPlayerWin };
+        return data;
+    }
+
+    private void SetPlayerDataToAllPlayers() {
+        PhotonNetwork.RaiseEvent(0, GetPlayerData(), RaiseEventOptions.Default, SendOptions.SendUnreliable);
+        WinPlayerData winnerData = new WinPlayerData(winPlayerNickName, winPlayersCount, timeScore, IsPlayerWin);
+        OnPlayerWinToAllPlayersEvent(winnerData);
     }
 }
 
-public class WinPlayerAnimationData {
+public class WinPlayerData {
     public string winnerName;
     public float winPlayersCount;
+    public float timeScore;
+    public bool IsPlayerWin;
 
-    public WinPlayerAnimationData(string _winnerName,float _winPlayersCount) {
+    public WinPlayerData(string _winnerName,float _winPlayersCount,float _timeScore,bool _IsPlayerWin) {
         winnerName = _winnerName;
         winPlayersCount = _winPlayersCount;
+        timeScore = _timeScore;
+        IsPlayerWin = _IsPlayerWin;
     }
 
     public string GetTextAboutWinner() {

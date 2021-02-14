@@ -8,7 +8,15 @@ public class PlayerCanvasController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI countDownText;
     [SerializeField] private GameObject startText;
     [SerializeField] private TextMeshProUGUI winRatingText;
+    [SerializeField] private TapController tapController;
+    [SerializeField] private GameObject roundResultPanelController;
+    [SerializeField] private GameObject leaveRoomButton;
     private int countDownOldInteger;
+
+    private void Awake() {
+        SceneNetworkController.OnGameEnd += ActivateRoundResultPanel;
+        SceneNetworkController.OnGameStarted += ActivateTapController;
+    }
 
     public void UpdateCountDownPanel(float seconds) {
         if(seconds > 0) {
@@ -27,5 +35,19 @@ public class PlayerCanvasController : MonoBehaviour
     public void PlayPlayerWinRatingTextAnimation(string _winRatingText) {
         winRatingText.gameObject.SetActive(true);
         winRatingText.text = _winRatingText;
+    }
+
+    private void ActivateRoundResultPanel() {
+        DeactivatePlayerGameUI();
+        roundResultPanelController.SetActive(true);
+    }
+
+    private void DeactivatePlayerGameUI() {
+        leaveRoomButton.SetActive(false);
+        countDownText.gameObject.SetActive(false);
+    }
+
+    private void ActivateTapController() {
+        tapController.enabled = true;
     }
 }
