@@ -32,8 +32,9 @@ public class NetworkMenuController : MonoBehaviourPunCallbacks {
         Hashtable properties = new Hashtable();
         properties.Add("MapName", mapName);
         properties.Add("Difficulty", difficulty);
+        string[] lobbyProperties = { "MapName"};
         PhotonNetwork.CreateRoom(roomName,
-                new RoomOptions() { MaxPlayers = 4 ,CustomRoomProperties = properties});
+                new RoomOptions() { MaxPlayers = 4 ,CustomRoomProperties = properties,CustomRoomPropertiesForLobby = lobbyProperties });
     }
 
     public void OnJoinRandomGame() {

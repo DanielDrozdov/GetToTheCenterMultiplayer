@@ -16,7 +16,7 @@ public class PlayerCanvasNetworkController : MonoBehaviour
     private static bool IsWinAnimEnd;
     private bool IsCheckNextCoroutineStarted;
 
-    private float startGameDelay = 2f;
+    private float startGameDelay = 10f;
     private float totalStartGameDelay;
 
     private void Awake() {

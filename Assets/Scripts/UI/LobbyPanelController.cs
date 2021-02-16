@@ -4,7 +4,9 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.SceneManagement;
+using Photon.Pun.UtilityScripts;
 using TMPro;
+using System;
 
 public class LobbyPanelController : MonoBehaviourPunCallbacks {
     [SerializeField] private TextMeshProUGUI mapNameText;
@@ -22,16 +24,13 @@ public class LobbyPanelController : MonoBehaviourPunCallbacks {
 
     public override void OnPlayerLeftRoom(Player otherPlayer) {
         RemovePlayer(otherPlayer);
+        int playerNumber = otherPlayer.GetPlayerNumber();
+        OnChangePlayersNumbers(playerNumber);
     }
 
     public override void OnJoinedRoom() {
         UpdatePlayerListAndCheckPlayerNumberInRoom();
         UpdateLobbyUI();
-        if(PhotonNetwork.LocalPlayer.ActorNumber == 1) {
-            ActivateHostPlayButton();
-        } else {
-            DeactivateHostPlayButton();
-        }
     }
 
     public override void OnLeftRoom() {
@@ -96,4 +95,31 @@ public class LobbyPanelController : MonoBehaviourPunCallbacks {
         playersPanels.Clear();
     }
 
+    public override void OnEnable() {
+        base.OnEnable();
+        PlayerNumbering.OnPlayerNumberingChanged += OnPlayerNumberingChanged;
+    }
+
+    public override void OnDisable() {
+        base.OnDisable();
+        PlayerNumbering.OnPlayerNumberingChanged -= OnPlayerNumberingChanged;
+    }
+
+    private void OnPlayerNumberingChanged() {
+        int playerNumber = PhotonNetwork.LocalPlayer.GetPlayerNumber();
+        if(playerNumber != -1) {
+            if(playerNumber == 0) {
+                ActivateHostPlayButton();
+            } else {
+                DeactivateHostPlayButton();
+            }
+        }
+    }
+
+    private void OnChangePlayersNumbers(int playerLeftNumber) {
+        Player[] players = PhotonNetwork.PlayerList;
+        for(int i = playerLeftNumber; i < players.Length;i++) {
+            players[playerLeftNumber].SetPlayerNumber(playerLeftNumber);
+        }
+    }
 }

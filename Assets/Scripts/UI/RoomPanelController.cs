@@ -14,6 +14,7 @@ public class RoomPanelController : MonoBehaviour
 
     public void SetData(RoomInfo roomInfo) {
         roomName.text = "Room name: " + roomInfo.Name;
+        mapName.text = "Map: " + (string)roomInfo.CustomProperties["MapName"];
         this.roomInfo = roomInfo;
         UpdatePlayersCount();
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
@@ -45,7 +46,7 @@ public class SceneNetworkController : PlayerDataInstantiate {
     }
 
     private void OnPlayerEnteredRoom() {
-        PlayerSpawnStateController playerSpawnStateController = PlayerSpawnStateControllers[PhotonNetwork.LocalPlayer.ActorNumber - 1];
+        PlayerSpawnStateController playerSpawnStateController = PlayerSpawnStateControllers[PhotonNetwork.LocalPlayer.GetPlayerNumber()];
         GameObject player = PhotonNetwork.Instantiate(PlayerPrefab.name, playerSpawnStateController.transform.position, Quaternion.identity);
         GameObject playerCamera = player.transform.Find("Main Camera").gameObject;
         playerCanvasController = playerCamera.GetComponent<PlayerCanvasController>();

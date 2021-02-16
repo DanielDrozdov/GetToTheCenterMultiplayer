@@ -12,7 +12,7 @@ public class RoundResultPanelController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI scoreResultsPanel;
     [SerializeField] private TextMeshProUGUI autoDisconnectText;
     [SerializeField] private Button quitButton;
-    private float autoDisconnectTime = 60f;
+    private float autoDisconnectTime = 15f;
     private float remainingDisconnectTime;
 
     private Queue<WinPlayerData> winPlayerDatas;
