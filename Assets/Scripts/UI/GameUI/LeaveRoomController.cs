@@ -7,8 +7,18 @@ using Photon.Realtime;
 
 public class LeaveRoomController : MonoBehaviourPunCallbacks
 {
+    [SerializeField] private GameObject leaveRoomPanel;
+
     private void Awake() {
         RoundResultPanelController.OnAutoDisconnect += LeaveRoom;
+    }
+
+    public void OnButtonClick_OpenExitMenu() {
+        leaveRoomPanel.SetActive(true);
+    }
+
+    public void OnButtonClick_CloseExitMenu() {
+        leaveRoomPanel.SetActive(false);
     }
 
     public void LeaveRoom() {
@@ -18,7 +28,7 @@ public class LeaveRoomController : MonoBehaviourPunCallbacks
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer) {
-        if(PhotonNetwork.CurrentRoom.PlayerCount < 2) {
+        if(PhotonNetwork.CurrentRoom.PlayerCount < 2 && PhotonNetwork.NetworkClientState != ClientState.Leaving) {
             LeaveRoom();
         }
     }

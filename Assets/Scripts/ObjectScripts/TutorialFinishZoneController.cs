@@ -7,7 +7,12 @@ public class TutorialFinishZoneController : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other) {
         if(other.CompareTag("Player")) {
-            SceneManager.LoadScene("Menu");
+            StartCoroutine(OneSecondDelayAndLoadMenuCoroutine());
         }
+    }
+
+    private IEnumerator OneSecondDelayAndLoadMenuCoroutine() {
+        yield return new WaitForSeconds(1);
+        SceneManager.LoadScene("Menu");
     }
 }

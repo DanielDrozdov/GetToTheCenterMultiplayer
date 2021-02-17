@@ -8,6 +8,7 @@ public class DataStorage
 {
     public readonly static string IsFirstEnterInGamePlayerPrefs = "IsFirstEnterInGame";
     public readonly static string NicknamePlayerPrefs = "Nickname";
+    public readonly static string AudioStatePlayerPrefs = "Audio";
 
     public static void SetPlayerNickName(string newName) {
         PlayerPrefs.SetString(NicknamePlayerPrefs, newName);

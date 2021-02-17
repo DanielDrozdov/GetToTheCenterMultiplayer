@@ -6,8 +6,7 @@ using Photon.Realtime;
 using TMPro;
 using UnityEngine.UI;
 
-public class RoundResultPanelController : MonoBehaviour
-{
+public class RoundResultPanelController : MonoBehaviourPunCallbacks {
     [SerializeField] private TextMeshProUGUI namesPanel;
     [SerializeField] private TextMeshProUGUI scoreResultsPanel;
     [SerializeField] private TextMeshProUGUI autoDisconnectText;
@@ -46,6 +45,9 @@ public class RoundResultPanelController : MonoBehaviour
     }
 
     private IEnumerator OneSecondActivateDelay() {
+        if(photonView.IsMine) {
+            AudioSceneController.GetInstance().PlayGameEndAudio();
+        }
         yield return new WaitForSeconds(1);
         winPlayerDatas = PlayerCanvasNetworkController.GetWinPlayersData();
         StartCoroutine(AutoDisconnectCoroutine());
@@ -66,5 +68,4 @@ public class RoundResultPanelController : MonoBehaviour
         }
         OnAutoDisconnect();
     }
-
 }

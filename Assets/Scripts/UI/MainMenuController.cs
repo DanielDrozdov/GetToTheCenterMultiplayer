@@ -36,10 +36,4 @@ public class MainMenuController : MonoBehaviour
     public void OnAgreeTutorial() {
         SceneManager.LoadScene(1);
     }
-
-    private void Update() {
-        if(Input.GetKeyDown(KeyCode.F)) {
-            PlayerPrefs.DeleteAll();
-        }
-    }
 }

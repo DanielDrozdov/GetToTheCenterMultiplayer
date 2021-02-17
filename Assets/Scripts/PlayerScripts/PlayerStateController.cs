@@ -61,6 +61,9 @@ public class PlayerStateController : MonoBehaviourPun
             if(photonView.IsMine) {
                 WinPlayerData winnerData = new WinPlayerData(_winPlayerNickName, winPlayersCount, _timeScore, _IsPlayerWin);
                 OnPlayerWinToAllPlayersEvent(winnerData);
+                if(_IsPlayerWin) {
+                    AudioSceneController.GetInstance().PlayWinAudio();
+                }
             }
         }
     }

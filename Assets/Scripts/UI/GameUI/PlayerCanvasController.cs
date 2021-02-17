@@ -18,14 +18,16 @@ public class PlayerCanvasController : MonoBehaviour
         SceneNetworkController.OnGameStarted += ActivateTapController;
     }
 
-    public void UpdateCountDownPanel(float seconds) {
+    public bool UpdateCountDownPanel(float seconds) {
         if(seconds > 0) {
             float newInteger = Mathf.Floor(seconds);
             if(countDownOldInteger != newInteger) {
                 countDownText.text = newInteger.ToString();
                 countDownOldInteger = (int)newInteger;
+                return true;
             }
         }
+        return false;
     }
 
     public void PlayStartTextAnimation() {

@@ -5,8 +5,9 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using System;
 
-public class PlayerCanvasNetworkController : MonoBehaviour
+public class PlayerCanvasNetworkController : MonoBehaviourPunCallbacks
 {
     [HideInInspector] public PlayerCanvasController PlayerCanvasController;
     private SceneNetworkController SceneNetworkController;
@@ -18,6 +19,8 @@ public class PlayerCanvasNetworkController : MonoBehaviour
 
     private float startGameDelay = 10f;
     private float totalStartGameDelay;
+
+    private bool isGameLoaded;
 
     private void Awake() {
         SceneNetworkController = GetComponent<SceneNetworkController>();
@@ -71,12 +74,21 @@ public class PlayerCanvasNetworkController : MonoBehaviour
     }
 
     private IEnumerator StartGameDelayCoroutine() {
+        AudioSceneController audioSceneController = AudioSceneController.GetInstance();
         while(totalStartGameDelay > 0) {
-            PlayerCanvasController.UpdateCountDownPanel(totalStartGameDelay);
+            bool isPanelUpdated = PlayerCanvasController.UpdateCountDownPanel(totalStartGameDelay);
+            if(isPanelUpdated && photonView.IsMine) {
+                audioSceneController.PlayTickAudio();
+            }
             totalStartGameDelay -= Time.unscaledDeltaTime;
             yield return null;
         };
+        if(photonView.IsMine) {
+            audioSceneController.PlayGongAudio();
+        }
+        UpdateGameStatedBool();
         SceneNetworkController.OnGameStarted_CallEvent();
+        isGameLoaded = true;
         PlayerCanvasController.PlayStartTextAnimation();
         StartCoroutine(CountDownRoundTimeCoroutine());
     }
@@ -122,5 +134,18 @@ public class PlayerCanvasNetworkController : MonoBehaviour
             SceneNetworkController.OnGameEnd_CallEvent();
             IsGameEnd = true;
         }
+    }
+
+    private IEnumerator VariablesCheckCoroutine() {
+        while(!isGameLoaded) {
+            yield return null;
+        }
+        
+    }
+
+    [PunRPC]
+    public void UpdateGameStatedBool() {
+        isGameLoaded = true;
+        Debug.Log("fdf");
     }
 }
