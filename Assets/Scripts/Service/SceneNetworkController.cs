@@ -9,6 +9,7 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class SceneNetworkController : PlayerDataInstantiate {
     public GameObject PlayerPrefab;
+    private static SceneNetworkController Instance;
     private static Transform cameraMainPoint;
     private PlayerSpawnStateController[] PlayerSpawnStateControllers;
     private PlayerCanvasNetworkController playerCanvasNetworkController;
@@ -22,11 +23,16 @@ public class SceneNetworkController : PlayerDataInstantiate {
     public static event GameDelegate OnGameEnd;
 
     private void Awake() {
+        Instance = this;
         GameZoneController roomGameZoneController = GameZonesController.GetGameRoomGameZone();
         cameraMainPoint = roomGameZoneController.CameraMainPoint;
         PlayerSpawnStateControllers = roomGameZoneController.PlayerSpawnStateControllers;
         playerCanvasNetworkController = GetComponent<PlayerCanvasNetworkController>();
         OnPlayerEnteredRoom();
+    }
+
+    public static SceneNetworkController GetInstance() {
+        return Instance;
     }
 
     public static Transform GetCameraMainPoint() {

@@ -7,19 +7,14 @@ public class AudioSceneController : MonoBehaviourPunCallbacks
 {
     [SerializeField] private AudioClip playerWinAudioClip;
     [SerializeField] private AudioClip endGameAudioClip;
-    [SerializeField] private AudioClip tapAudioClip;
     [SerializeField] private AudioClip gongAudioClip;
     [SerializeField] private AudioClip tickAudioClip;
+    [SerializeField] private AudioSource mainAudioSource;
+    [SerializeField] private AudioSource secondMainAudioSource;
     private static AudioSceneController Instance;
-    private AudioSource audioSource;
 
     private void Awake() {
-        audioSource = GetComponent<AudioSource>();
-        if(!photonView.IsMine) {
-            gameObject.SetActive(false);
-        } else {
-            Instance = this;
-        }
+        Instance = this;
     }
 
     public static AudioSceneController GetInstance() {
@@ -27,26 +22,22 @@ public class AudioSceneController : MonoBehaviourPunCallbacks
     }
 
     public void PlayGongAudio() {
-        PlayAudio(gongAudioClip);
+        PlayAudio(secondMainAudioSource,gongAudioClip);
     }
 
     public void PlayTickAudio() {
-        PlayAudio(tickAudioClip);
+        PlayAudio(mainAudioSource,tickAudioClip);
     }
 
     public void PlayGameEndAudio() {
-        PlayAudio(endGameAudioClip);
-    }
-
-    public void PlayTapAudio() {
-        PlayAudio(tapAudioClip);
+        PlayAudio(mainAudioSource, endGameAudioClip);
     }
 
     public void PlayWinAudio() {
-        PlayAudio(playerWinAudioClip);
+        PlayAudio(secondMainAudioSource,playerWinAudioClip);
     }
 
-    private void PlayAudio(AudioClip audioClip) {
+    private void PlayAudio(AudioSource audioSource,AudioClip audioClip) {
         audioSource.clip = audioClip;
         audioSource.Play();
     }

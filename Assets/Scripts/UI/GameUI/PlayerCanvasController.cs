@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using Photon.Pun;
 
-public class PlayerCanvasController : MonoBehaviour
+public class PlayerCanvasController : MonoBehaviourPunCallbacks
 {
     [SerializeField] private TextMeshProUGUI countDownText;
     [SerializeField] private GameObject startText;
@@ -16,6 +17,7 @@ public class PlayerCanvasController : MonoBehaviour
     private void Awake() {
         SceneNetworkController.OnGameEnd += ActivateRoundResultPanel;
         SceneNetworkController.OnGameStarted += ActivateTapController;
+        SceneNetworkController.OnGameStarted += PlayStartTextAnimation;
     }
 
     public bool UpdateCountDownPanel(float seconds) {
@@ -50,6 +52,10 @@ public class PlayerCanvasController : MonoBehaviour
     }
 
     private void ActivateTapController() {
-        tapController.enabled = true;
+        if(photonView != null) {
+            if(photonView.IsMine) {
+                tapController.enabled = true;
+            }
+        }
     }
 }

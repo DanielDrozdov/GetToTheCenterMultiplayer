@@ -38,6 +38,7 @@ public class PlayerStateController : MonoBehaviourPun
             OnDisablePlayerFunctions();
             IsPlayerWin = true;
             SetPlayerDataToAllPlayers();
+            AudioSceneController.GetInstance().PlayWinAudio();
         }
     }
 

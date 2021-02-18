@@ -20,7 +20,7 @@ public class PlayerCanvasNetworkController : MonoBehaviourPunCallbacks
     private float startGameDelay = 10f;
     private float totalStartGameDelay;
 
-    private bool isGameLoaded;
+    public AudioSceneController audioSceneController;
 
     private void Awake() {
         SceneNetworkController = GetComponent<SceneNetworkController>();
@@ -74,30 +74,30 @@ public class PlayerCanvasNetworkController : MonoBehaviourPunCallbacks
     }
 
     private IEnumerator StartGameDelayCoroutine() {
-        AudioSceneController audioSceneController = AudioSceneController.GetInstance();
         while(totalStartGameDelay > 0) {
             bool isPanelUpdated = PlayerCanvasController.UpdateCountDownPanel(totalStartGameDelay);
-            if(isPanelUpdated && photonView.IsMine) {
+            if(isPanelUpdated) {
                 audioSceneController.PlayTickAudio();
             }
             totalStartGameDelay -= Time.unscaledDeltaTime;
             yield return null;
         };
-        if(photonView.IsMine) {
-            audioSceneController.PlayGongAudio();
-        }
-        UpdateGameStatedBool();
+        audioSceneController.PlayGongAudio();
         SceneNetworkController.OnGameStarted_CallEvent();
-        isGameLoaded = true;
-        PlayerCanvasController.PlayStartTextAnimation();
         StartCoroutine(CountDownRoundTimeCoroutine());
     }
 
     private IEnumerator CountDownRoundTimeCoroutine() {
         float roundTime = GetRoundTime();
+        float startAnimationSounDelay = 2f;
         float remainingRoundTime = roundTime;
-        while(remainingRoundTime > 0) {
-            PlayerCanvasController.UpdateCountDownPanel(remainingRoundTime);
+        while(remainingRoundTime > 0 && !IsGameEnd) {
+            bool isPanelUpdated = PlayerCanvasController.UpdateCountDownPanel(remainingRoundTime);
+            if(remainingRoundTime <= roundTime - startAnimationSounDelay) {
+                if(isPanelUpdated) {
+                    audioSceneController.PlayTickAudio();
+                }
+            }
             remainingRoundTime -= Time.unscaledDeltaTime;
             yield return null;
         }
@@ -134,18 +134,5 @@ public class PlayerCanvasNetworkController : MonoBehaviourPunCallbacks
             SceneNetworkController.OnGameEnd_CallEvent();
             IsGameEnd = true;
         }
-    }
-
-    private IEnumerator VariablesCheckCoroutine() {
-        while(!isGameLoaded) {
-            yield return null;
-        }
-        
-    }
-
-    [PunRPC]
-    public void UpdateGameStatedBool() {
-        isGameLoaded = true;
-        Debug.Log("fdf");
     }
 }

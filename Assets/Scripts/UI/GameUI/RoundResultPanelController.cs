@@ -45,9 +45,7 @@ public class RoundResultPanelController : MonoBehaviourPunCallbacks {
     }
 
     private IEnumerator OneSecondActivateDelay() {
-        if(photonView.IsMine) {
-            AudioSceneController.GetInstance().PlayGameEndAudio();
-        }
+        AudioSceneController.GetInstance().PlayGameEndAudio();
         yield return new WaitForSeconds(1);
         winPlayerDatas = PlayerCanvasNetworkController.GetWinPlayersData();
         StartCoroutine(AutoDisconnectCoroutine());

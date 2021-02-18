@@ -14,9 +14,9 @@ public class PlayerNickNameTabletController : MonoBehaviourPunCallbacks
 
     private void Start() {
         if(!photonView.IsMine) {
-            nick = GetComponent<TextMeshProUGUI>();
-            nick.text = PlayerPrefs.GetString(DataStorage.NicknamePlayerPrefs);
             mainCamera = Camera.main;
+            nick = GetComponent<TextMeshProUGUI>();
+            nick.text = photonView.Owner.NickName;
         } else {
             Destroy(gameObject);
         }
