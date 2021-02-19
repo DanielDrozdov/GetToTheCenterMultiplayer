@@ -52,10 +52,6 @@ public class PlayerCanvasController : MonoBehaviourPunCallbacks
     }
 
     private void ActivateTapController() {
-        if(photonView != null) {
-            if(photonView.IsMine) {
-                tapController.enabled = true;
-            }
-        }
+        tapController.IfCanMove = true;
     }
 }

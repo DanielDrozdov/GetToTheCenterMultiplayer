@@ -2823,6 +2823,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerMoveController: {fileID: 0}
+  IfCanMove: 0
 --- !u!114 &4642792513866068521
 MonoBehaviour:
   m_ObjectHideFlags: 0
